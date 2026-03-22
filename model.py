@@ -11,8 +11,9 @@ from mesa.discrete_space import OrthogonalMooreGrid
 from mesa.experimental.data_collection import DataRecorder, DatasetConfig
 from mesa.experimental.scenarios import Scenario
 
-from agents import SearcherAgent
-from agents import TargetAgent
+from agent.target_agent import TargetAgent
+from agent.searcher_agent import SearcherAgent
+from agent.reserve_searcher_agent import ReserveSearcherAgent
 
 import numpy as np
 
@@ -88,7 +89,7 @@ class KalmanTrack(Model):
         base_x = min(500, self.grid.width - 1)
         base_y = min(1000, self.grid.height - 1)
         base_cell = self.grid.find_nearest_cell((base_x, base_y))
-        from agents import ReserveSearcherAgent
+        from agent.reserve_searcher_agent import ReserveSearcherAgent
 
         self.reserve_agent = ReserveSearcherAgent.create_agents(self, 1, base_cell)[0]
 
@@ -108,18 +109,6 @@ class KalmanTrack(Model):
                 agent.track_target = None
                 agent.last_measurement = self.last_known_target_position
                 agent.missed_detections = 0
-
-    # @property
-    # def gini(self):
-    #     """Calculate the Gini coefficient for the model's current wealth distribution.
-
-    #     The Gini coefficient is a measure of inequality in distributions.
-    #     - A Gini of 0 represents complete equality, where all agents have equal wealth.
-    #     - A Gini of 1 represents maximal inequality, where one agent has all wealth.
-    #     """
-    #     agent_wealths = [agent.wealth for agent in self.agents]
-    #     x = sorted(agent_wealths)
-    #     n = self.num_agents
-    #     # Calculate using the standard formula for Gini coefficient
-    #     b = sum(xi * (n - i) for i, xi in enumerate(x)) / (n * sum(x))
-    #     return 1 + (1 / n) - 2 * b
+            elif isinstance(agent, ReserveSearcherAgent):
+                # Reserve searcher does not maintain its own Kalman filter, but remembers last known target position.
+                agent.last_known_target_position = self.last_known_target_position

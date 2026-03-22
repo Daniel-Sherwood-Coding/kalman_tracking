@@ -2,7 +2,10 @@ import altair as alt
 import numpy as np  
 
 from model import (KalmanTrack, BasicScenario)
-from agents import TargetAgent, SearcherAgent, PredictedTargetAgent, ReserveSearcherAgent
+from agent.target_agent import TargetAgent
+from agent.searcher_agent import SearcherAgent
+from agent.predicted_target_agent import PredictedTargetAgent
+from agent.reserve_searcher_agent import ReserveSearcherAgent
 
 from mesa.mesa_logging import INFO, log_to_stderr
 from mesa.visualization import (
